@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<!--
+  ⫘ CHYBRIDA – chybrida.de
+  GitHub Pages Landing Page
+  ==========================================
+  ZWECK:
+  Leitet chybrida.de/app/schwimmen
+  sofort an CHYBRIDA Apps Script weiter.
+
+  ZERO-WAIT: kein fetch, kein CORS
+  → sofortige window.location Weiterleitung
+  → CHYBRIDA prüft Slug intern
+
+  404.html = diese Datei (Kopie)
+  → GitHub leitet alle unbekannten
+    Pfade durch 404.html
+  → diese liest URL aus + leitet weiter
+  ==========================================
+-->
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1">
+  <title>⫘ CHYBRIDA</title>
+
+  <!-- PWA auf eigener Domain chybrida.de -->
+  <!-- Browser nimmt DIESES Icon – nicht Google G -->
+  <link rel="manifest"        href="/manifest.json">
+  <link rel="icon"            type="image/svg+xml" href="/icon.svg">
+  <link rel="apple-touch-icon" href="/icon.svg">
+  <meta name="theme-color"   content="#004085">
+  <meta name="application-name" content="⫘ CHYBRIDA">
+
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont,
+                   'Segoe UI', Roboto, sans-serif;
+      background:  #004085;
+      color:       #fff;
+      height:      100vh;
+      display:     flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .logo {
+      font-size:   64px;
+      line-height: 1;
+    }
+    .title {
+      font-size:   24px;
+      font-weight: bold;
+      opacity:     0.9;
+    }
+    .msg {
+      font-size:   14px;
+      opacity:     0.6;
+    }
+    .spinner {
+      width:         28px;
+      height:        28px;
+      border:        3px solid rgba(255,255,255,0.3);
+      border-top:    3px solid #fff;
+      border-radius: 50%;
+      animation:     spin 0.7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+  <div class="logo">⫘</div>
+  <div class="title">CHYBRIDA</div>
+  <div class="spinner"></div>
+  <div class="msg" id="msg">Wird geladen...</div>
+
+  <script>
+    /*
+     * ZERO-WAIT Routing
+     * ─────────────────
+     * Liest Slug aus URL:
+     * chybrida.de/app/schwimmen → slug = "schwimmen"
+     * chybrida.de/              → slug = "portal"
+     *
+     * Leitet SOFORT an CHYBRIDA weiter:
+     * .../exec?slug=schwimmen
+     *
+     * CHYBRIDA prüft intern:
+     * → APP_REGISTRY[slug] gefunden → App laden
+     * → nicht gefunden → App-Liste anzeigen
+     *
+     * KEIN fetch, KEIN CORS-Problem.
+     */
+
+    // ── CHYBRIDA Web-App URL ──────────────────
+    // Diese URL EINMAL setzen – nie wieder ändern
+    var CHYBRIDA_URL = 'https://script.google.com/macros/s/AKfycbxPfCI3-OuYCPZFuNwE5cE2awQrgydqSXCWz7b46fiGqHgw_yfZjsokKNu8dsonZ8GAow/exec';
+
+    // ── Slug aus URL extrahieren ──────────────
+    var path  = window.location.pathname;
+    var parts = path.split('/').filter(function(p) { return p !== ''; });
+
+    // Mögliche URL-Strukturen:
+    // /app/schwimmen → slug = schwimmen
+    // /schwimmen     → slug = schwimmen
+    // /              → slug = portal (Cockpit)
+    var slug = 'portal';
+    if (parts.length >= 2 && parts[0] === 'app') {
+      slug = parts[1].toLowerCase();
+    } else if (parts.length === 1) {
+      slug = parts[0].toLowerCase();
+    }
+
+    // ── Feedback anzeigen ────────────────────
+    document.getElementById('msg').innerText =
+      slug === 'portal'
+        ? 'Öffne CHYBRIDA...'
+        : 'Öffne ' + slug + '...';
+
+    // ── Sofortige Weiterleitung ───────────────
+    // Kein setTimeout – sofort
+    if (slug === 'portal') {
+      // Direkt zur CHYBRIDA Engine
+      window.location.href = CHYBRIDA_URL;
+    } else {
+      // App via Slug laden
+      window.location.href = CHYBRIDA_URL + '?slug=' + encodeURIComponent(slug);
+    }
+  </script>
+</body>
+</html>
