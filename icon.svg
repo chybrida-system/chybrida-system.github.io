@@ -1,22 +1,16 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-  <!-- Hintergrund: CHYBRIDA Blau -->
-  <rect width="100" height="100" rx="20" fill="#004085"/>
-  
-  <!-- ⫘ Symbol als weißer Text -->
-  <text x="50" y="58"
-        font-size="52"
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="80" fill="#004085"/>
+  <text x="256" y="300"
+        font-size="260"
         text-anchor="middle"
-        dominant-baseline="middle"
         font-family="serif"
         fill="#ffffff"
-        font-weight="bold">⫘</text>
-        
-  <!-- CHYBRIDA Text in Hellblau -->
-  <text x="50" y="85"
-        font-size="10"
+        style="fill:#ffffff !important;">⫘</text>
+  <text x="256" y="420"
+        font-size="60"
         text-anchor="middle"
         font-family="sans-serif"
         fill="#7ec8f7"
-        font-weight="bold"
-        letter-spacing="2">CHYBRIDA</text>
+        letter-spacing="10"
+        style="fill:#7ec8f7 !important;">CHYBRIDA</text>
 </svg>
