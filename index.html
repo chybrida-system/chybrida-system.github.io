@@ -38,13 +38,14 @@
   <title>⫘ CHYBRIDA</title>
 
   <!-- PWA auf chybrida.de Domain -->
-  <link rel="manifest"         href="/manifest.json">
   <link rel="icon"             type="image/svg+xml" href="/icon.svg">
   <link rel="apple-touch-icon" href="/icon.svg">
   <meta name="apple-mobile-web-app-capable"            content="yes">
   <meta name="apple-mobile-web-app-status-bar-style"   content="black-translucent">
-  <meta name="apple-mobile-web-app-title"              content="⫘ CHYBRIDA">
+  <meta name="apple-mobile-web-app-title"              content="⫘ CHYBRIDA" id="app-title-meta">
   <meta name="theme-color" content="#004085" id="theme-meta">
+  <!-- manifest.json wird dynamisch per JS gesetzt -->
+  <!-- damit start_url auf die richtige App zeigt -->
 
   <style>
     *, *::before, *::after {
@@ -205,9 +206,63 @@
         .classList.add('visible');
     }
 
+    /* Dynamisches Manifest generieren
+     * start_url zeigt auf die aktuelle App-URL
+     * damit "Zum Startbildschirm" die richtige
+     * App öffnet – nicht die Startseite
+     */
+    function buildManifest(slug, appName, color) {
+      var startUrl = slug === 'portal'
+        ? 'https://chybrida.de/'
+        : 'https://chybrida.de/app/' + slug;
+      var themeColor = color || '#004085';
+
+      var manifest = {
+        name:             appName || slug,
+        short_name:       appName || slug,
+        start_url:        startUrl,
+        display:          'standalone',
+        background_color: themeColor,
+        theme_color:      themeColor,
+        icons: [{
+          src:   'https://chybrida.de/icon.svg',
+          sizes: 'any',
+          type:  'image/svg+xml',
+          purpose: 'any maskable'
+        }]
+      };
+
+      var blob = new Blob(
+        [JSON.stringify(manifest)],
+        { type: 'application/json' }
+      );
+      var url = URL.createObjectURL(blob);
+
+      // Alten manifest link entfernen falls vorhanden
+      var existing = document.querySelector('link[rel="manifest"]');
+      if (existing) existing.remove();
+
+      // Neuen manifest link setzen
+      var link = document.createElement('link');
+      link.rel  = 'manifest';
+      link.href = url;
+      document.head.appendChild(link);
+
+      // apple-mobile-web-app-title setzen
+      var titleMeta = document.getElementById('app-title-meta');
+      if (titleMeta) titleMeta.setAttribute('content', appName || slug);
+
+      // Seiten-Titel setzen
+      document.title = appName || ('⫘ ' + slug);
+    }
+
     /* Start */
     var slug  = getSlug();
     var frame = document.getElementById('app-frame');
+
+    // Manifest vorläufig mit Slug setzen
+    // Wird aktualisiert sobald AppClient antwortet
+    buildManifest(slug, slug === 'portal' ? 'CHYBRIDA' : slug);
 
     document.getElementById('loader-msg').innerText =
       slug === 'portal' ? 'Öffne CHYBRIDA...'
@@ -226,14 +281,34 @@
       if (!frame.classList.contains('loaded')) showError();
     }, 15000);
 
-    /* Theme-Color von AppClient empfangen
-     * AppClient kann senden:
-     * window.parent.postMessage(
-     *   {type:'chybrida-theme', color:'#004085'}, '*')
+    /* Nachrichten von AppClient empfangen
+     * AppClient sendet App-Name + Farbe
+     * → Manifest wird aktualisiert
+     * → "Zum Startbildschirm" zeigt richtige App
+     * → GitHub muss NIE wieder angefasst werden
      */
     window.addEventListener('message', function(e) {
-      if (e.data && e.data.type === 'chybrida-theme'
-          && e.data.color) {
+      if (!e.data) return;
+
+      // App-Info: Name + Farbe + ID
+      if (e.data.type === 'chybrida-app') {
+        var name  = e.data.name  || slug;
+        var color = e.data.color || '#004085';
+
+        // Manifest mit echtem App-Namen aktualisieren
+        buildManifest(slug, name, color);
+
+        // Theme-Color anpassen
+        document.getElementById('theme-meta')
+          .setAttribute('content', color);
+
+        // Seiten-Titel setzen
+        document.title = name;
+        return;
+      }
+
+      // Nur Theme-Color (Rückwärtskompatibilität)
+      if (e.data.type === 'chybrida-theme' && e.data.color) {
         document.getElementById('theme-meta')
           .setAttribute('content', e.data.color);
       }
