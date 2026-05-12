@@ -179,17 +179,43 @@
      * chybrida.de/              → "portal"
      */
     function getSlug() {
-      var parts = window.location.pathname
+      // Methode 1: Subdomain
+      // schwimmen.chybrida.de → "schwimmen"
+      var host  = window.location.hostname;
+      var parts = host.split('.');
+      if (parts.length >= 3) {
+        var sub = parts[0].toLowerCase();
+        if (sub !== 'www') return sub;
+      }
+
+      // Methode 2: Pfad
+      // chybrida.de/app/schwimmen → "schwimmen"
+      var path  = window.location.pathname
                     .split('/').filter(Boolean);
-      if (!parts.length)              return 'portal';
-      if (parts[0]==='app' && parts[1]) return parts[1].toLowerCase();
-      return parts[0].toLowerCase();
+      if (!path.length)                    return 'portal';
+      if (path[0]==='app' && path[1])      return path[1].toLowerCase();
+      return path[0].toLowerCase();
     }
 
     function buildUrl(slug) {
       return slug === 'portal'
         ? CHYBRIDA_EXEC_URL
         : CHYBRIDA_EXEC_URL + '?slug=' + encodeURIComponent(slug);
+    }
+
+    function getCanonicalUrl() {
+      // Kanonische URL für manifest start_url
+      // schwimmen.chybrida.de → https://schwimmen.chybrida.de
+      // chybrida.de/app/schwimmen → https://chybrida.de/app/schwimmen
+      var host  = window.location.hostname;
+      var parts = host.split('.');
+      if (parts.length >= 3 && parts[0] !== 'www') {
+        return 'https://' + host + '/';
+      }
+      var slug = getSlug();
+      return slug === 'portal'
+        ? 'https://chybrida.de/'
+        : 'https://chybrida.de/app/' + slug;
     }
 
     function hideLoader() {
@@ -212,9 +238,7 @@
      * App öffnet – nicht die Startseite
      */
     function buildManifest(slug, appName, color) {
-      var startUrl = slug === 'portal'
-        ? 'https://chybrida.de/'
-        : 'https://chybrida.de/app/' + slug;
+      var startUrl   = getCanonicalUrl();
       var themeColor = color || '#004085';
 
       var manifest = {
