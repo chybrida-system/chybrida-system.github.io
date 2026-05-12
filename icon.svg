@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Hintergrund: CHYBRIDA Blau mit abgerundeten Ecken -->
+  <rect width="100" height="100" rx="20" fill="#004085"/>
+  <!-- ⫘ Symbol -->
+  <text x="50" y="54"
+        font-size="48"
+        text-anchor="middle"
+        font-family="serif"
+        fill="#ffffff"
+        font-weight="bold">⫘</text>
+  <!-- App-Name -->
+  <text x="50" y="80"
+        font-size="12"
+        text-anchor="middle"
+        font-family="sans-serif"
+        fill="#7ec8f7"
+        font-weight="bold"
+        letter-spacing="2">CHYBRIDA</text>
+</svg>
