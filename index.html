@@ -22,6 +22,10 @@
   404.html = diese Datei
   → GitHub leitet unbekannte Pfade durch
   → User merkt nichts
+
+  LOADING ANIMATION V41.5:
+  ⪾⪽ → ⫘  "Die Brille die sich zu ⫘ entwickelt"
+  "You see what you get." — visuell demonstriert
   ==========================================
   Architekt : Harald W. Fehde
   Copyright : © 2026 Harald W. Fehde
@@ -37,79 +41,45 @@
                  viewport-fit=cover">
   <title>⫘ CHYBRIDA</title>
 
-  <!-- PWA auf chybrida.de Domain -->
   <link rel="icon"             type="image/svg+xml" href="/icon.svg">
   <link rel="apple-touch-icon" href="/icon.svg">
   <meta name="apple-mobile-web-app-capable"            content="yes">
   <meta name="apple-mobile-web-app-status-bar-style"   content="black-translucent">
   <meta name="apple-mobile-web-app-title"              content="⫘ CHYBRIDA" id="app-title-meta">
-  <meta name="theme-color" content="#004085" id="theme-meta">
-  <!-- manifest.json wird dynamisch per JS gesetzt -->
-  <!-- damit start_url auf die richtige App zeigt -->
+  <meta name="theme-color" content="#001833" id="theme-meta">
 
   <style>
-    *, *::before, *::after {
-      box-sizing: border-box;
-      margin: 0; padding: 0;
-    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html, body {
-      width: 100%; height: 100%;
-      overflow: hidden;
-      padding: env(safe-area-inset-top)
-               env(safe-area-inset-right)
-               env(safe-area-inset-bottom)
-               env(safe-area-inset-left);
+      width: 100%; height: 100%; overflow: hidden;
+      padding: env(safe-area-inset-top) env(safe-area-inset-right)
+               env(safe-area-inset-bottom) env(safe-area-inset-left);
     }
-
-    /* Lade-Screen */
     #loader {
       position: fixed; inset: 0;
-      background: #004085;
+      background: #001833;
       display: flex; flex-direction: column;
       align-items: center; justify-content: center;
-      gap: 16px; z-index: 100;
+      gap: 2px; z-index: 100;
       transition: opacity 0.4s ease;
     }
     #loader.hidden { opacity: 0; pointer-events: none; }
-    .loader-icon {
-      font-size: 72px; line-height: 1;
-      animation: pulse 2s ease-in-out infinite;
-      color: #ffffff !important;
-      -webkit-text-fill-color: #ffffff !important;
-    }
     .loader-title {
-      font-family: -apple-system, BlinkMacSystemFont,
-                   "Segoe UI", Roboto, sans-serif;
-      font-size: 22px; font-weight: bold;
-      color: #7ec8f7; letter-spacing: 4px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-size: 18px; font-weight: bold;
+      color: #7ec8f7; letter-spacing: 6px;
+      margin-top: 8px;
     }
     .loader-sub {
-      font-family: sans-serif;
-      font-size: 13px;
-      color: rgba(255,255,255,0.5);
+      font-family: monospace; font-size: 11px;
+      letter-spacing: 3px; text-transform: uppercase;
+      color: rgba(126,200,247,0.4); margin-top: 4px;
     }
-    .spinner {
-      width: 28px; height: 28px;
-      border: 3px solid rgba(255,255,255,0.2);
-      border-top: 3px solid #fff;
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-    }
-    @keyframes spin  { to { transform: rotate(360deg); } }
-    @keyframes pulse {
-      0%,100% { opacity:1; transform:scale(1); }
-      50%     { opacity:.85; transform:scale(.97); }
-    }
-
-    /* iFrame */
     #app-frame {
-      width: 100%; height: 100%;
-      border: none; display: block;
+      width: 100%; height: 100%; border: none; display: block;
       opacity: 0; transition: opacity 0.4s ease;
     }
     #app-frame.loaded { opacity: 1; }
-
-    /* Fehler-Screen */
     #error-screen {
       display: none; position: fixed; inset: 0;
       background: #004085; flex-direction: column;
@@ -118,82 +88,90 @@
     }
     #error-screen.visible { display: flex; }
     .error-icon  { font-size: 48px; }
-    .error-title { font-family: sans-serif; font-size: 20px;
-                   font-weight: bold; color: #fff; }
-    .error-msg   { font-family: sans-serif; font-size: 13px;
-                   color: rgba(255,255,255,0.6); max-width: 300px; }
+    .error-title { font-family: sans-serif; font-size: 20px; font-weight: bold; color: #fff; }
+    .error-msg   { font-family: sans-serif; font-size: 13px; color: rgba(255,255,255,0.6); max-width: 300px; }
     .error-btn   {
       margin-top: 8px; padding: 12px 24px;
-      background: rgba(255,255,255,0.15);
-      color: #fff; border: 1px solid rgba(255,255,255,0.3);
-      border-radius: 6px; font-size: 14px;
-      cursor: pointer; font-family: sans-serif;
+      background: rgba(255,255,255,0.15); color: #fff;
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 6px; font-size: 14px; cursor: pointer;
     }
   </style>
 </head>
 <body>
 
-  <!-- Lade-Screen: ⫘ Branding sofort sichtbar -->
+  <!-- Lade-Screen: ⪾⪽ → ⫘ Brille-Animation -->
   <div id="loader">
-    <div class="loader-icon">⫘</div>
+    <div style="position:relative;width:160px;height:80px;">
+      <svg xmlns="http://www.w3.org/2000/svg"
+           width="160" height="80" viewBox="0 0 160 80"
+           style="position:absolute;top:0;left:0;">
+        <text x="84" y="61.5" font-size="72"
+              font-family="sans-serif" text-anchor="end">⪾
+          <animate attributeName="fill"
+            values="#7ec8f7; #7ec8f7; #ffffff; #ffffff"
+            keyTimes="0; 0.2; 0.85; 1" calcMode="spline"
+            keySplines="0 0 1 1; 0.4 0 0.2 1; 0 0 1 1"
+            dur="3s" repeatCount="indefinite"/>
+        </text>
+        <text x="76" y="61.5" font-size="72"
+              font-family="sans-serif" text-anchor="start">⪽
+          <animate attributeName="fill"
+            values="#7ec8f7; #7ec8f7; #ffffff; #ffffff"
+            keyTimes="0; 0.2; 0.85; 1" calcMode="spline"
+            keySplines="0 0 1 1; 0.4 0 0.2 1; 0 0 1 1"
+            dur="3s" repeatCount="indefinite"/>
+        </text>
+        <line id="chy-line" y1="41.5" y2="41.5"
+              stroke-width="7.3" stroke-linecap="round">
+          <animate attributeName="x1"
+            values="80; 80; 61; 61" keyTimes="0; 0.2; 0.75; 1"
+            calcMode="spline" keySplines="0 0 1 1; 0.4 0 0.2 1; 0 0 1 1"
+            dur="3s" repeatCount="indefinite"/>
+          <animate attributeName="x2"
+            values="80; 80; 99; 99" keyTimes="0; 0.2; 0.75; 1"
+            calcMode="spline" keySplines="0 0 1 1; 0.4 0 0.2 1; 0 0 1 1"
+            dur="3s" repeatCount="indefinite"/>
+          <animate attributeName="stroke"
+            values="#7ec8f7; #7ec8f7; #ffffff; #ffffff"
+            keyTimes="0; 0.2; 0.85; 1" calcMode="spline"
+            keySplines="0 0 1 1; 0.4 0 0.2 1; 0 0 1 1"
+            dur="3s" repeatCount="indefinite"/>
+        </line>
+      </svg>
+    </div>
     <div class="loader-title">CHYBRIDA</div>
-    <div class="spinner"></div>
-    <div class="loader-sub" id="loader-msg">Wird geladen...</div>
+    <div class="loader-sub" id="loader-msg">loading</div>
   </div>
 
-  <!-- App iFrame: Google läuft unsichtbar hier -->
-  <iframe
-    id="app-frame"
-    src="about:blank"
-    allow="camera; microphone; downloads;
-           clipboard-read; clipboard-write"
-    allowfullscreen>
-  </iframe>
+  <!-- App iFrame -->
+  <iframe id="app-frame" src="about:blank"
+    allow="camera; microphone; downloads; clipboard-read; clipboard-write"
+    allowfullscreen></iframe>
 
-  <!-- Fehler-Screen: bei Verbindungsproblemen -->
+  <!-- Fehler-Screen -->
   <div id="error-screen">
     <div class="error-icon">⚠</div>
     <div class="error-title">Verbindungsfehler</div>
-    <div class="error-msg">
-      App konnte nicht geladen werden.
-      Bitte Internetverbindung prüfen.
-    </div>
-    <button class="error-btn"
-            onclick="window.location.reload()">
-      ↺ Neu laden
-    </button>
+    <div class="error-msg">App konnte nicht geladen werden. Bitte Internetverbindung prüfen.</div>
+    <button class="error-btn" onclick="window.location.reload()">↺ Neu laden</button>
   </div>
 
   <script>
-    /*
-     * EINMALIG SETZEN:
-     * SCRIPT_ID aus Apps Script → Bereitstellen
-     * → Web-App → URL kopieren → ID entnehmen
-     */
     var CHYBRIDA_EXEC_URL =
       'https://script.google.com/macros/s/' +
       'AKfycbxPfCI3-OuYCPZFuNwE5cE2awQrgydqSXCWz7b46fiGqHgw_yfZjsokKNu8dsonZ8GAow/exec';
 
-    /* Slug aus URL lesen
-     * chybrida.de/app/schwimmen → "schwimmen"
-     * chybrida.de/              → "portal"
-     */
     function getSlug() {
-      // Methode 1: Subdomain
-      // schwimmen.chybrida.de → "schwimmen"
       var host  = window.location.hostname;
       var parts = host.split('.');
       if (parts.length >= 3) {
         var sub = parts[0].toLowerCase();
         if (sub !== 'www') return sub;
       }
-
-      // Methode 2: Pfad
-      // chybrida.de/app/schwimmen → "schwimmen"
-      var path  = window.location.pathname
-                    .split('/').filter(Boolean);
-      if (!path.length)                    return 'portal';
-      if (path[0]==='app' && path[1])      return path[1].toLowerCase();
+      var path = window.location.pathname.split('/').filter(Boolean);
+      if (!path.length)               return 'portal';
+      if (path[0]==='app' && path[1]) return path[1].toLowerCase();
       return path[0].toLowerCase();
     }
 
@@ -204,18 +182,11 @@
     }
 
     function getCanonicalUrl() {
-      // Kanonische URL für manifest start_url
-      // schwimmen.chybrida.de → https://schwimmen.chybrida.de
-      // chybrida.de/app/schwimmen → https://chybrida.de/app/schwimmen
       var host  = window.location.hostname;
       var parts = host.split('.');
-      if (parts.length >= 3 && parts[0] !== 'www') {
-        return 'https://' + host + '/';
-      }
+      if (parts.length >= 3 && parts[0] !== 'www') return 'https://' + host + '/';
       var slug = getSlug();
-      return slug === 'portal'
-        ? 'https://chybrida.de/'
-        : 'https://chybrida.de/app/' + slug;
+      return slug === 'portal' ? 'https://chybrida.de/' : 'https://chybrida.de/app/' + slug;
     }
 
     function hideLoader() {
@@ -226,115 +197,57 @@
     }
 
     function showError() {
-      document.getElementById('loader')
-        .classList.add('hidden');
-      document.getElementById('error-screen')
-        .classList.add('visible');
+      document.getElementById('loader').classList.add('hidden');
+      document.getElementById('error-screen').classList.add('visible');
     }
 
-    /* Dynamisches Manifest generieren
-     * start_url zeigt auf die aktuelle App-URL
-     * damit "Zum Startbildschirm" die richtige
-     * App öffnet – nicht die Startseite
-     */
     function buildManifest(slug, appName, color) {
       var startUrl   = getCanonicalUrl();
-      var themeColor = color || '#004085';
-
+      var themeColor = color || '#001833';
       var manifest = {
-        name:             appName || slug,
-        short_name:       appName || slug,
-        start_url:        startUrl,
-        display:          'standalone',
-        background_color: themeColor,
-        theme_color:      themeColor,
-        icons: [{
-          src:   'https://chybrida.de/icon.svg',
-          sizes: 'any',
-          type:  'image/svg+xml',
-          purpose: 'any maskable'
-        }]
+        name: appName || slug, short_name: appName || slug,
+        start_url: startUrl, display: 'standalone',
+        background_color: themeColor, theme_color: themeColor,
+        icons: [{ src: 'https://chybrida.de/icon.svg', sizes: 'any', type: 'image/svg+xml', purpose: 'any maskable' }]
       };
-
-      var blob = new Blob(
-        [JSON.stringify(manifest)],
-        { type: 'application/json' }
-      );
-      var url = URL.createObjectURL(blob);
-
-      // Alten manifest link entfernen falls vorhanden
-      var existing = document.querySelector('link[rel="manifest"]');
-      if (existing) existing.remove();
-
-      // Neuen manifest link setzen
+      var blob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
+      var url  = URL.createObjectURL(blob);
+      var ex   = document.querySelector('link[rel="manifest"]');
+      if (ex) ex.remove();
       var link = document.createElement('link');
-      link.rel  = 'manifest';
-      link.href = url;
+      link.rel = 'manifest'; link.href = url;
       document.head.appendChild(link);
-
-      // apple-mobile-web-app-title setzen
-      var titleMeta = document.getElementById('app-title-meta');
-      if (titleMeta) titleMeta.setAttribute('content', appName || slug);
-
-      // Seiten-Titel setzen
+      var tm = document.getElementById('app-title-meta');
+      if (tm) tm.setAttribute('content', appName || slug);
       document.title = appName || ('⫘ ' + slug);
     }
 
-    /* Start */
     var slug  = getSlug();
     var frame = document.getElementById('app-frame');
 
-    // Manifest vorläufig mit Slug setzen
-    // Wird aktualisiert sobald AppClient antwortet
     buildManifest(slug, slug === 'portal' ? 'CHYBRIDA' : slug);
 
-    document.getElementById('loader-msg').innerText =
-      slug === 'portal' ? 'Öffne CHYBRIDA...'
-                        : 'Öffne ' + slug + '...';
+    var lbl = document.getElementById('loader-msg');
+    if (lbl) lbl.innerText = slug === 'portal' ? 'loading' : slug + '...';
 
     frame.src = buildUrl(slug);
 
-    /* Loader nach 3.5s ausblenden */
     var t1 = setTimeout(hideLoader, 3500);
-    frame.addEventListener('load', function() {
-      clearTimeout(t1); hideLoader();
-    });
+    frame.addEventListener('load', function() { clearTimeout(t1); hideLoader(); });
+    setTimeout(function() { if (!frame.classList.contains('loaded')) showError(); }, 15000);
 
-    /* Fehler nach 15s */
-    setTimeout(function() {
-      if (!frame.classList.contains('loaded')) showError();
-    }, 15000);
-
-    /* Nachrichten von AppClient empfangen
-     * AppClient sendet App-Name + Farbe
-     * → Manifest wird aktualisiert
-     * → "Zum Startbildschirm" zeigt richtige App
-     * → GitHub muss NIE wieder angefasst werden
-     */
     window.addEventListener('message', function(e) {
       if (!e.data) return;
-
-      // App-Info: Name + Farbe + ID
       if (e.data.type === 'chybrida-app') {
         var name  = e.data.name  || slug;
-        var color = e.data.color || '#004085';
-
-        // Manifest mit echtem App-Namen aktualisieren
+        var color = e.data.color || '#001833';
         buildManifest(slug, name, color);
-
-        // Theme-Color anpassen
-        document.getElementById('theme-meta')
-          .setAttribute('content', color);
-
-        // Seiten-Titel setzen
+        document.getElementById('theme-meta').setAttribute('content', color);
         document.title = name;
         return;
       }
-
-      // Nur Theme-Color (Rückwärtskompatibilität)
       if (e.data.type === 'chybrida-theme' && e.data.color) {
-        document.getElementById('theme-meta')
-          .setAttribute('content', e.data.color);
+        document.getElementById('theme-meta').setAttribute('content', e.data.color);
       }
     });
   </script>
