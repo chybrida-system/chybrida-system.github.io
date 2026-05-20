@@ -1,11 +1,11 @@
 {
   "name": "⫘ CHYBRIDA",
   "short_name": "CHYBRIDA",
-  "description": "CHYBRIDA App-Generator",
+  "description": "You get what you need. You see what you get.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#004085",
-  "theme_color": "#004085",
+  "background_color": "#001833",
+  "theme_color": "#001833",
   "icons": [
     {
       "src": "/icon.svg",
@@ -16,5 +16,3 @@
   ],
   "categories": ["productivity", "utilities"]
 }
-
-
